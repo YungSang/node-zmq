@@ -1,4 +1,4 @@
-var zmq = require('zmq');
+var zmq = require('../build/default/index');
 
 var context = new zmq.Context();
 
