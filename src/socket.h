@@ -17,15 +17,15 @@ namespace zmq_node {
 
 class Socket : public node::EventEmitter {
 private:
-  zmq::socket_t *socket_;
-  int            type_;
-  ev_idle        zmq_watcher_;
+	zmq::socket_t *socket_;
+	int            type_;
+	ev_idle        zmq_watcher_;
 
 // Node Extension Specific Class Methods
 public:
 	static void Init (v8::Handle<v8::Object>);
 
-protected:
+private:
 	static v8::Handle<v8::Value> New (const v8::Arguments &);
 	static v8::Handle<v8::Value> Close (const v8::Arguments &);
 	static v8::Handle<v8::Value> Connect (const v8::Arguments &);
@@ -35,23 +35,22 @@ protected:
 	static v8::Handle<v8::Value> GetOption (const v8::Arguments &);
 
 // Regular Class Methods for ZMQ
-public:
 	Socket(zmq::context_t *, int);
 	~Socket();
 
 	void Close();
-
 	void Connect(const char *);
 	void Bind(const char *);
 	bool Send(char *, int, int);
 	void SetOption(int, const void *, size_t);
 	void SetOption(int, void *, size_t *);
 
+	void AfterZMQPoll(int);
+
 	zmq::socket_t *getZMQSocket();
 
+public:
 	static void DoZMQPoll(EV_P_ ev_idle *, int); 
-
-	void AfterZMQPoll(int);
 };
 
 } // namespace zmq_node

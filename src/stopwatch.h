@@ -14,13 +14,13 @@ namespace zmq_node {
 
 class Stopwatch : public node::ObjectWrap {
 private:
-  void *watch_;
+	void *watch_;
 
 // Node Extension Specific Class Methods
 public:
 	static void Init (v8::Handle<v8::Object>);
 
-protected:
+private:
 	static v8::Handle<v8::Value> New (const v8::Arguments &);
 	static v8::Handle<v8::Value> Start (const v8::Arguments &);
 	static v8::Handle<v8::Value> Stop (const v8::Arguments &);
@@ -29,7 +29,6 @@ protected:
 	Stopwatch();
 	~Stopwatch();
 
-public:
 	void Start();
 	unsigned long Stop();
 };

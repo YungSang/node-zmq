@@ -15,13 +15,13 @@ namespace zmq_node {
 
 class Context : public node::ObjectWrap {
 private:
-  zmq::context_t *context_;
+	zmq::context_t *context_;
 
 // Node Extension Specific Class Methods
 public:
 	static void Init (v8::Handle<v8::Object>);
 
-protected:
+private:
 	static v8::Handle<v8::Value> New (const v8::Arguments &);
 	static v8::Handle<v8::Value> Term (const v8::Arguments &);
 
@@ -29,9 +29,9 @@ protected:
 	Context(int);
 	~Context();
 
-public:
 	void Term();
 
+public:
 	zmq::context_t *getZMQContext();
 };
 
