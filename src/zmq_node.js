@@ -34,6 +34,12 @@ exports.device = function(device, insocket, outsocket) {
 			insocket.xsend(messages);
 		});
 		break;
+	case zmq.FORWARDER:
+		insocket.setopt(zmq.SUBSCRIBE, "");
+		insocket.on("recv_buf", function(messages) {
+			outsocket.xsend(messages);
+		});
+		break;
 	default:
 		throw new Error("Device type not supported");
 	}
