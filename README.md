@@ -15,7 +15,7 @@
 
 ## Examples
 
-All examples follow [the ØMQ Guide][zduide]. Please refer to the guide.
+All examples follow [the ØMQ Guide][zguide] . Please refer to the guide.
 
 ## Licensing
 
