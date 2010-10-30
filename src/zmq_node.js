@@ -35,7 +35,7 @@ exports.device = function(device, insocket, outsocket) {
 		});
 		break;
 	case zmq.FORWARDER:
-		insocket.setopt(zmq.SUBSCRIBE, "");
+	case zmq.STREAMER:
 		insocket.on("recv_buf", function(messages) {
 			outsocket.xsend(messages);
 		});
