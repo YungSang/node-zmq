@@ -5,7 +5,7 @@
 //
 var zmq = require('zmq');
 
-var zhelper = require('./zhelper');
+var zhelper = require('./zhelpers');
 
 var context = new zmq.Context();
 

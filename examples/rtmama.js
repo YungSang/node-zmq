@@ -5,7 +5,7 @@ var zmq = require('zmq');
 
 var Script = process.binding('evals').Script;
 
-var zhelper = require('./zhelper');
+var zhelper = require('./zhelpers');
 
 var NBR_WORKERS = 10;
 
