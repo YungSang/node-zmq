@@ -2,6 +2,7 @@
 //  Multithreaded Hello World server in Node.js
 //
 var zmq = require('zmq');
+
 var Script = process.binding('evals').Script;
 
 var context = new zmq.Context();

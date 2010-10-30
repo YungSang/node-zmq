@@ -1,7 +1,8 @@
 //
 //  Custom routing Router to Dealer (XREP to XREQ) in Node.js
 //
-var zmq  = require('zmq');
+var zmq = require('zmq');
+
 var Script = process.binding('evals').Script;
 
 var worker_a_js = [
