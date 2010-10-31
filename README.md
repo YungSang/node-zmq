@@ -4,7 +4,7 @@
 
 ## Dependencies
 
- * [Node.js][node.js] - tested with v2.0.3 and v2.0.4
+ * [Node.js][node.js] - tested with v0.2.3 and v0.2.4
  * [ØMQ][zmq] - tested with v2.0.10
 
 ## To Build & Install
