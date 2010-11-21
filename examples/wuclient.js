@@ -15,7 +15,7 @@ var update_nbr = 0;
 var total_temp = 0;
 
 subscriber.on("recv", function(messages) {
-//	console.log("Received reply: " + messages[0]);
+	console.log("Received reply: [" + update_nbr + "]: " + messages[0]);
 
 	var data = messages[0].split(" ");
 	total_temp += parseInt(data[1]);

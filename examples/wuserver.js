@@ -25,5 +25,5 @@ while (1) {
 	publisher.send(update);
 //	console.log("Sending update: " + update);
 
-	zmq.nanosleep(1);
+//	zmq.nanosleep(1);
 }

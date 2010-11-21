@@ -25,5 +25,6 @@ subscriber.connect("tcp://localhost:5565");
 var sync = context.socket(zmq.PUSH);
 sync.connect("tcp://localhost:5564");
 sync.send("");
-zmq.sleep(1);
-sync.close();
+setTimeout(function() {
+	sync.close();
+}, 1000);

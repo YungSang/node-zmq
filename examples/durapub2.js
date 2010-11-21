@@ -20,10 +20,10 @@ sync.on("recv", function(messages) {
 
 		zmq.sleep(1);
 
-		sync.close();
 		publisher.close();
 		context.term();
 	}, 0);
+	sync.close();
 });
 
 sync.bind("tcp://*:5564");
@@ -31,10 +31,10 @@ sync.bind("tcp://*:5564");
 //  We send updates via this socket
 var publisher = context.socket(zmq.PUB);
 
-publisher.bind("tcp://*:5565");
-
 //  Prevent publisher overflow from slow subscribers
 publisher.setopt(zmq.HWM, 2);
 
 //  Specify swap space in bytes, this covers all subscribers
 publisher.setopt(zmq.SWAP, 25000000);
+
+publisher.bind("tcp://*:5565");

@@ -20,10 +20,10 @@ sync.on("recv", function(messages) {
 
 		zmq.sleep(1);
 
-		sync.close();
 		publisher.close();
 		context.term();
 	}, 0);
+	sync.close();
 });
 
 sync.bind("tcp://*:5564");
