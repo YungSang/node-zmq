@@ -29,8 +29,9 @@ Context::New(const v8::Arguments& args) {
 		io_threads = (int) args[0]->ToInteger()->Value();
 	}
 
-	Context *sw = new Context(io_threads);
-	sw->Wrap(args.This());
+	Context *context = new Context(io_threads);
+	context->Wrap(args.This());
+	context->Ref();
 	return args.This();
 }
 
@@ -57,6 +58,7 @@ Context::Term() {
 	if (context_) {
 		delete context_;
 		context_ = NULL;
+		Unref();
 	}
 }
 

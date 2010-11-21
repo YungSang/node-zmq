@@ -54,6 +54,7 @@ Stopwatch::~Stopwatch () {
 void
 Stopwatch::Start() {
 	if (watch_ == NULL) {
+		Ref();
 		watch_ = zmq_stopwatch_start();
 	}
 	else {
@@ -68,6 +69,7 @@ Stopwatch::Stop() {
 	if (watch_) {
 		time = zmq_stopwatch_stop(watch_);
 		watch_ = NULL;
+		Unref();
 	}
 	return time;
 }

@@ -49,6 +49,7 @@ Socket::New(const v8::Arguments& args) {
 
 	Socket *socket = new Socket(context->getZMQContext(), type);
 	socket->Wrap(args.This());
+	socket->Ref();
 	return args.This();
 }
 
@@ -257,11 +258,11 @@ void
 Socket::Close() {
 	if (ev_is_active(&zmq_watcher_)) {
 		ev_idle_stop(EV_DEFAULT_UC_ &zmq_watcher_);
-		Unref();
 	}
 	if (socket_) {
 		delete socket_;
 		socket_ = NULL;
+		Unref();
 	}
 }
 
@@ -270,7 +271,6 @@ Socket::Connect(const char *address) {
 	socket_->connect(address);
 	if ((type_ != ZMQ_PUB) && (type_ != ZMQ_PUSH)) {
 		ev_idle_start(EV_DEFAULT_UC_ &zmq_watcher_);
-		Ref();
 	}
 }
 
@@ -279,7 +279,6 @@ Socket::Bind(const char *address) {
 	socket_->bind(address);
 	if ((type_ != ZMQ_PUB) && (type_ != ZMQ_PUSH)) {
 		ev_idle_start(EV_DEFAULT_UC_ &zmq_watcher_);
-		Ref();
 	}
 }
 
