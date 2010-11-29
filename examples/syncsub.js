@@ -14,7 +14,6 @@ subscriber.on("recv", function(messages) {
 	if (messages[0] == "END") {
 		console.log("Received " + update_nbr + " updates");
 		subscriber.close();
-		syncclient.close();
 		context.term();
 	}
 	update_nbr++;
@@ -31,3 +30,7 @@ syncclient.connect("tcp://localhost:5562");
 
 //  - send a synchronization request
 syncclient.send("");
+
+setTimeout(function() {
+	syncclient.close();
+}, 1000);

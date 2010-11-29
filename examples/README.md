@@ -8,11 +8,11 @@ Example pairs
 
 4) wuserver.js <- wuclient.js 222
 
-5) tasksink.js <- taskwork.js <- taskvent.js
+5) tasksink.js <- taskwork.js * n <- taskvent.js
 
 6) msreader.js <- wuserver.js <- taskvent.js
 
-7) tasksink2.js <- taskwork2.js <- taskvent.js
+7) tasksink2.js <- taskwork2.js * n <- taskvent.js
 
 8) wuserver.js <- wuproxy.js <- wuclient2.js 222
 

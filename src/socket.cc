@@ -307,7 +307,7 @@ Socket::DoZMQPoll(EV_P_ ev_idle *watcher, int revents) {
 	poller.events  = ZMQ_POLLIN;
 	poller.revents = 0;
 
-	int rc = zmq::poll(&poller, 1, 0);
+	int rc = zmq::poll(&poller, 1, 1000);
 
 	if (rc > 0) socket->AfterZMQPoll(poller.revents);
 }

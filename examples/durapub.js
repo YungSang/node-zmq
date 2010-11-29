@@ -18,10 +18,10 @@ sync.on("recv", function(messages) {
 		}
 		publisher.send("END");
 
-		zmq.sleep(1);
-
-		publisher.close();
-		context.term();
+		setTimeout(function() {
+			publisher.close();
+			context.term();
+		}, 1000);
 	}, 0);
 	sync.close();
 });
