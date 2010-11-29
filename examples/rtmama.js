@@ -62,7 +62,6 @@ client.on("recv", function(messages) {
 		if (worker_nbr >= NBR_WORKERS) {
 			setTimeout(function() {
 				client.close();
-				context.term();
 			}, 1000);
 		}
 		return;

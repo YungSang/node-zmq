@@ -65,5 +65,4 @@ client.send("END");
 
 setTimeout(function() {
 	client.close();
-	context.term();
 }, 1000);
