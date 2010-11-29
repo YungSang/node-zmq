@@ -4,8 +4,8 @@
 
 ## Dependencies
 
- * [Node.js][node.js] - tested with v0.2.3 and v0.2.4
- * [ØMQ][zmq] - tested with v2.0.10
+ * [Node.js][node.js] - tested with v0.2.4
+ * [ØMQ][zmq] - tested with [v2.1 (master 2010/11/22)][zeromq2]
 
 ## To Build & Install
 
@@ -25,3 +25,4 @@ Licensed under the very permissive [MIT License][mit-license]
 [zguide]: http://zguide.zeromq.org/
 [zmq]: http://www.zeromq.org/
 [mit-license]: http://www.opensource.org/licenses/mit-license.php
+[zeromq2]: https://github.com/zeromq/zeromq2
