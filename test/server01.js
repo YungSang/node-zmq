@@ -11,7 +11,7 @@ socket.on("recv", function(messages) {
 	socket.send("World!");
 	setTimeout(function() {
 		socket.close();
-	}, 0);
+	}, 1000);
 });
 
 socket.bind("tcp://*:5555");
