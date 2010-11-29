@@ -1,4 +1,5 @@
 #include "socket.h"
+#include "context.h"
 
 namespace zmq_node {
 
@@ -47,7 +48,7 @@ Socket::New(const v8::Arguments& args) {
 	}
 	int type = (int) args[1]->ToInteger()->Value();
 
-	Socket *socket = new Socket(context->getZMQContext(), type);
+	Socket *socket = new Socket(context, type);
 	socket->Wrap(args.This());
 	socket->Ref();
 	return args.This();
@@ -242,11 +243,10 @@ Socket::GetOption (const v8::Arguments &args) {
 }
 
 // Regular Class Methods for ZMQ
-Socket::Socket (zmq::context_t *context, int type) : node::EventEmitter () {
-	type_   = type;
-	socket_ = new zmq::socket_t(*context, type);
-	ev_idle_init(&zmq_watcher_, DoZMQPoll);
-	zmq_watcher_.data = this;
+Socket::Socket (Context *context, int type) : node::EventEmitter () {
+	context_ = context;
+	type_    = type;
+	socket_  = new zmq::socket_t(*(context->getZMQContext()), type);
 }
 
 Socket::~Socket () {
@@ -256,10 +256,10 @@ Socket::~Socket () {
 
 void
 Socket::Close() {
-	if (ev_is_active(&zmq_watcher_)) {
-		ev_idle_stop(EV_DEFAULT_UC_ &zmq_watcher_);
-	}
 	if (socket_) {
+		if ((type_ != ZMQ_PUB) && (type_ != ZMQ_PUSH)) {
+			context_->removeSocket(this);
+		}
 		delete socket_;
 		socket_ = NULL;
 		Unref();
@@ -270,7 +270,7 @@ void
 Socket::Connect(const char *address) {
 	socket_->connect(address);
 	if ((type_ != ZMQ_PUB) && (type_ != ZMQ_PUSH)) {
-		ev_idle_start(EV_DEFAULT_UC_ &zmq_watcher_);
+		context_->addSocket(this);
 	}
 }
 
@@ -278,7 +278,7 @@ void
 Socket::Bind(const char *address) {
 	socket_->bind(address);
 	if ((type_ != ZMQ_PUB) && (type_ != ZMQ_PUSH)) {
-		ev_idle_start(EV_DEFAULT_UC_ &zmq_watcher_);
+		context_->addSocket(this);
 	}
 }
 
@@ -297,46 +297,32 @@ Socket::getZMQSocket() {
 }
 
 void
-Socket::DoZMQPoll(EV_P_ ev_idle *watcher, int revents) {
-	Socket *socket = static_cast<Socket*>(watcher->data);
-
-	zmq_pollitem_t poller;
-
-	poller.socket  = *(socket->getZMQSocket());
-	poller.fd      = 0;
-	poller.events  = ZMQ_POLLIN;
-	poller.revents = 0;
-
-	int rc = zmq::poll(&poller, 1, 0);
-
-	if (rc) socket->AfterZMQPoll(poller.revents);
-}
-
-void
 Socket::AfterZMQPoll(int revents) {
 	if (revents & ZMQ_POLLIN) {
 		Local<Array> messages = Array::New();
 
-		for (int i = 0 ; 1 ; i++) {
-			zmq::message_t *msg_ = new zmq::message_t();
-			if (socket_->recv(msg_, ZMQ_NOBLOCK)) {
-				v8::Local<v8::Value> value = node::Encode(msg_->data(), msg_->size(), node::BINARY);
-				messages->Set(Integer::New(i), value);
+		int     i;
+		int64_t more = 1;
+		size_t  more_size = sizeof (more);
 
-				int64_t more;
-				size_t more_size = sizeof (more);
-				socket_->getsockopt(ZMQ_RCVMORE, &more, &more_size);
+		zmq::message_t *msg_ = new zmq::message_t();
 
-				if (!more) {
-					delete msg_;
-					break;
-				}
-			}
+		for (i = 0 ; more && socket_->recv(msg_, ZMQ_NOBLOCK) ; i++) {
+			v8::Local<v8::Value> value = node::Encode(msg_->data(), msg_->size(), node::BINARY);
+			messages->Set(Integer::New(i), value);
+
+			socket_->getsockopt(ZMQ_RCVMORE, &more, &more_size);
+
 			delete msg_;
+			msg_ = new zmq::message_t();
 		}
 
-		Local<Value> argv[] = {messages};
-		Emit(receive_symbol, 1, argv);
+		delete msg_;
+
+		if (i > 0) {
+			Local<Value> argv[] = {messages};
+			Emit(receive_symbol, 1, argv);
+		}
 	}
 }
 

@@ -113,8 +113,8 @@ NanoSleep(const v8::Arguments& args) {
 } // namespace zmq_node
 
 #include "stopwatch.h"
-#include "context.h"
 #include "socket.h"
+#include "context.h"
 
 extern "C" {
 	void init (v8::Handle<v8::Object> target) {
