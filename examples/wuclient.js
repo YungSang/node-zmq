@@ -22,8 +22,10 @@ subscriber.on("recv", function(messages) {
 	update_nbr++;
 	if (update_nbr >= 100) {
 		console.log("Average temperature for zipcode '" + filter + "' was " + Math.floor(total_temp / update_nbr) + "F");
-		subscriber.close();
-		context.term();
+		setTimeout(function() {
+			subscriber.close();
+			context.term();
+		}, 0);
 	}
 });
 

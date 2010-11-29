@@ -27,9 +27,11 @@ syncservice.on("recv", function(messages) {
 		}
 		publisher.send("END");
 
-		publisher.close();
-		syncservice.close();
-		context.term();
+		setTimeout(function() {
+			publisher.close();
+			syncservice.close();
+			context.term();
+		}, 0);
 	}
 });
 

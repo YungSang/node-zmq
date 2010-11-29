@@ -38,10 +38,12 @@ var controller = context.socket(zmq.SUB);
 //  Any waiting controller command acts as 'KILL'
 controller.on("recv", function(messages) {
 	util.print("\n");
-	receiver.close();
-	sender.close();
-	controller.close();
-	context.term();
+	setTimeout(function() {
+		receiver.close();
+		sender.close();
+		controller.close();
+		context.term();
+	}, 0);
 });
 
 controller.connect("tcp://localhost:5559");

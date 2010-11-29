@@ -12,7 +12,9 @@ var worker_a_js = [
 	'worker.on("recv", function(messages){',
 	'	if (messages[0] == "END") {',
 	'		console.log("A received: " + total);',
-	'		worker.close();',
+	'		setTimeout(function() {',
+	'			worker.close();',
+	'		}, 0);',
 	'	}',
 	'	total++;',
 	'});',
@@ -26,7 +28,9 @@ var worker_b_js = [
 	'worker.on("recv", function(messages){',
 	'	if (messages[0] == "END") {',
 	'		console.log("B received: " + total);',
-	'		worker.close();',
+	'		setTimeout(function() {',
+	'			worker.close();',
+	'		}, 0);',
 	'	}',
 	'	total++;',
 	'});',
@@ -65,5 +69,4 @@ client.send("END");
 
 setTimeout(function() {
 	client.close();
-	context.term();
 }, 1000);

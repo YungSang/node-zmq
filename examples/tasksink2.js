@@ -31,9 +31,11 @@ receiver.on("recv", function(messages) {
 	if (task_nbr > 100) {
 		console.log("\nTotal elapsed time: " + (watch.stop() / 1000) + " msec");
 		controller.send("KILL");
-		receiver.close();
-		controller.close();
-		context.term();
+		setTimeout(function() {
+			receiver.close();
+			controller.close();
+			context.term();
+		}, 0);
 	}
 });
 
