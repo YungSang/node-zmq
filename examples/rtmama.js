@@ -45,7 +45,7 @@ var client = context.socket(zmq.XREP);
 
 for (var worker_nbr = 0 ; worker_nbr < NBR_WORKERS ; worker_nbr++) {
 	Script.runInNewContext(worker_js, {
-		zmq: zmq, context: context, zhelper: zhelper, Math: Math, console: console, identity: worker_nbr
+		zmq: zmq, context: context, zhelper: zhelper, Math: Math, console: console, identity: worker_nbr, setTimeout: setTimeout
 	});
 }
 

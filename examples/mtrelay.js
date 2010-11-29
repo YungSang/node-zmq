@@ -50,5 +50,5 @@ receiver.on("recv", function(messages) {
 });
 
 Script.runInNewContext(step2_js, {
-	zmq: zmq, context: context, Script: Script, step1_js: step1_js
+	zmq: zmq, context: context, Script: Script, step1_js: step1_js, setTimeout: setTimeout
 });

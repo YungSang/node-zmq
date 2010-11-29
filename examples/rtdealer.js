@@ -43,10 +43,10 @@ var client = context.socket(zmq.XREP);
 client.bind("ipc://routing.ipc");
 
 Script.runInNewContext(worker_a_js, {
-	zmq: zmq, context: context, console: console
+	zmq: zmq, context: context, console: console, setTimeout: setTimeout
 });
 Script.runInNewContext(worker_b_js, {
-	zmq: zmq, context: context, console: console
+	zmq: zmq, context: context, console: console, setTimeout: setTimeout
 });
 
 zmq.sleep(1);
