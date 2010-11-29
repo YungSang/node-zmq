@@ -1,3 +1,4 @@
+#include "socket.h"
 #include "context.h"
 
 namespace zmq_node {
@@ -46,6 +47,8 @@ Context::Term(const v8::Arguments& args) {
 // Regular Class Methods for ZMQ
 Context::Context(int io_threads) {
 	context_ = new zmq::context_t(io_threads);
+	ev_idle_init(&zmq_watcher_, DoZMQPoll);
+	zmq_watcher_.data = this;
 }
 
 Context::~Context () {
@@ -56,6 +59,10 @@ Context::~Context () {
 void
 Context::Term() {
 	if (context_) {
+		std::list<Socket *>::iterator s;
+		for (s = sockets_.begin(); s != sockets_.end(); s++) {
+			(*s)->Close();
+		}
 		delete context_;
 		context_ = NULL;
 		Unref();
@@ -65,6 +72,48 @@ Context::Term() {
 zmq::context_t *
 Context::getZMQContext() {
 	return context_;
+}
+
+void
+Context::addSocket(Socket *socket) {
+	sockets_.push_back(socket);
+	if (!ev_is_active(&zmq_watcher_)) {
+		ev_idle_start(EV_DEFAULT_UC_ &zmq_watcher_);
+	}
+}
+
+void
+Context::removeSocket(Socket *socket) {
+	sockets_.remove(socket);
+	if (sockets_.empty()) {
+		ev_idle_stop(EV_DEFAULT_UC_ &zmq_watcher_);
+	}
+}
+
+void
+Context::DoZMQPoll(EV_P_ ev_idle *watcher, int revents) {
+	std::list<Socket *>::iterator s;
+	Context *context = static_cast<Context*>(watcher->data);
+
+	int i;
+
+	zmq_pollitem_t *pollers = (zmq_pollitem_t *)
+		malloc(context->sockets_.size() * sizeof(zmq_pollitem_t));
+
+	for (i = 0, s = context->sockets_.begin(); s != context->sockets_.end(); i++, s++) {
+		pollers[i].socket  = *((*s)->getZMQSocket());
+		pollers[i].fd      = 0;
+		pollers[i].events  = ZMQ_POLLIN;
+		pollers[i].revents = 0;
+	}
+
+	zmq::poll(pollers, context->sockets_.size(), 1000);
+
+	for (i = 0, s = context->sockets_.begin(); s != context->sockets_.end(); i++, s++) {
+		(*s)->AfterZMQPoll(pollers[i].revents);
+	}
+
+	free(pollers);
 }
 
 } // namespace zmq_node

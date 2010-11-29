@@ -8,18 +8,18 @@
 
 #include <zmq.hpp>
 
-#include "context.h"
-
 //using namespace node;
 using namespace v8;
 
 namespace zmq_node {
 
+class Context;
+
 class Socket : public node::EventEmitter {
 private:
+	Context       *context_;
 	zmq::socket_t *socket_;
 	int            type_;
-	ev_idle        zmq_watcher_;
 
 // Node Extension Specific Class Methods
 public:
@@ -35,22 +35,21 @@ private:
 	static v8::Handle<v8::Value> GetOption (const v8::Arguments &);
 
 // Regular Class Methods for ZMQ
-	Socket(zmq::context_t *, int);
+	Socket(Context *, int);
 	~Socket();
 
-	void Close();
 	void Connect(const char *);
 	void Bind(const char *);
 	bool Send(char *, int, int);
 	void SetOption(int, const void *, size_t);
 	void SetOption(int, void *, size_t *);
 
+public:
+	void Close();
+
 	void AfterZMQPoll(int);
 
 	zmq::socket_t *getZMQSocket();
-
-public:
-	static void DoZMQPoll(EV_P_ ev_idle *, int);
 };
 
 } // namespace zmq_node

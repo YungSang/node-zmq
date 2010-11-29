@@ -12,8 +12,10 @@ var subscriber = context.socket(zmq.SUB);
 subscriber.on("recv", function(messages) {
 	console.log(messages[0]);
 	if (messages[0] == "END") {
-		subscriber.close();
-		context.term();
+		setTimeout(function() {
+			subscriber.close();
+			context.term();
+		}, 0);
 	}
 });
 

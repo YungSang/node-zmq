@@ -21,10 +21,6 @@ syncservice.on("recv", function(messages) {
 	syncservice.send("");
 	subscribers++;
 	if (subscribers >= SUBSCRIBERS_EXPECTED) {
-		setTimeout(function() {
-			syncservice.close();
-		}, 1000);
-
 		//  Now broadcast exactly 10k updates followed by END
 		for (var update_nbr = 0 ; update_nbr < 10000 ; update_nbr++) {
 			publisher.send("Rhubarb");
@@ -32,6 +28,7 @@ syncservice.on("recv", function(messages) {
 		publisher.send("END");
 
 		setTimeout(function() {
+			syncservice.close();
 			publisher.close();
 			context.term();
 		}, 1000);

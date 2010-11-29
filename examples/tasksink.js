@@ -31,8 +31,10 @@ receiver.on("recv", function(messages) {
 	task_nbr++;
 	if (task_nbr > 100) {
 		console.log("\nTotal elapsed time: " + (watch.stop() / 1000) + " msec");
-		receiver.close();
-		context.term();
+		setTimeout(function() {
+			receiver.close();
+			context.term();
+		}, 0);
 	}
 });
 

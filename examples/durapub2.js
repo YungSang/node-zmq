@@ -23,7 +23,9 @@ sync.on("recv", function(messages) {
 			context.term();
 		}, 1000);
 	}, 0);
-	sync.close();
+	setTimeout(function() {
+		sync.close();
+	}, 0);
 });
 
 sync.bind("tcp://*:5564");

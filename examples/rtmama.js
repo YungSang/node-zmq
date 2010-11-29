@@ -20,7 +20,9 @@ var worker_js = [
 		//  Get workload from router, until finished
 	'	if (messages[0] == "END") {',
 	'		console.log("Processed: [" + identity + "]: " + total + " tasks");',
-	'		worker.close();',
+	'		setTimeout(function() {',
+	'			worker.close();',
+	'		}, 0);',
 	'		return;',
 	'	}',
 	'	total++;',
@@ -43,7 +45,7 @@ var client = context.socket(zmq.XREP);
 
 for (var worker_nbr = 0 ; worker_nbr < NBR_WORKERS ; worker_nbr++) {
 	Script.runInNewContext(worker_js, {
-		zmq: zmq, context: context, zhelper: zhelper, Math: Math, console: console, identity: worker_nbr
+		zmq: zmq, context: context, zhelper: zhelper, Math: Math, console: console, identity: worker_nbr, setTimeout: setTimeout
 	});
 }
 

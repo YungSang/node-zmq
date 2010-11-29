@@ -27,8 +27,10 @@ var step2_js = [
 	'//  Wait for signal',
 	'receiver.on("recv", function(messages) {',
 	'	sender.send("");',
-	'	receiver.close();',
-	'	sender.close();',
+	'	setTimeout(function() {',
+	'		receiver.close();',
+	'		sender.close();',
+	'	}, 0);',
 	'});',
 
 	'Script.runInNewContext(step1_js, {',
@@ -41,10 +43,12 @@ receiver.bind("inproc://step3");
 
 receiver.on("recv", function(messages) {
 	console.log("Test successful!");
-	receiver.close();
-	context.term();
+	setTimeout(function() {
+		receiver.close();
+		context.term();
+	}, 0);
 });
 
 Script.runInNewContext(step2_js, {
-	zmq: zmq, context: context, Script: Script, step1_js: step1_js
+	zmq: zmq, context: context, Script: Script, step1_js: step1_js, setTimeout: setTimeout
 });

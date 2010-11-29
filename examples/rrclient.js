@@ -17,8 +17,10 @@ requester.on("recv", function(messages) {
 
 	request_nbr++;
 	if (request_nbr >= 10) {
-		requester.close();
-		context.term();
+		setTimeout(function() {
+			requester.close();
+			context.term();
+		}, 0);
 		return;
 	}
 

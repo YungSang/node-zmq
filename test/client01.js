@@ -8,7 +8,9 @@ socket.on("recv", function(messages) {
 	for (var i = 0, len = messages.length ; i < len ; i++) {
 		console.log(messages[i]);
 	}
-	socket.close();
+	setTimeout(function() {
+		socket.close();
+	}, 0);
 });
 
 socket.connect("tcp://localhost:5555");

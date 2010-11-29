@@ -9,7 +9,9 @@ socket.on("recv", function(messages) {
 		console.log(messages[i]);
 	}
 	socket.send("World!");
-	socket.close();
+	setTimeout(function() {
+		socket.close();
+	}, 1000);
 });
 
 socket.bind("tcp://*:5555");
