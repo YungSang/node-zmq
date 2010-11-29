@@ -50,7 +50,7 @@ private:
 	zmq::socket_t *getZMQSocket();
 
 public:
-	static void DoZMQPoll(EV_P_ ev_idle *, int); 
+	static void DoZMQPoll(EV_P_ ev_idle *, int);
 };
 
 } // namespace zmq_node

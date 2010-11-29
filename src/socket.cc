@@ -307,9 +307,9 @@ Socket::DoZMQPoll(EV_P_ ev_idle *watcher, int revents) {
 	poller.events  = ZMQ_POLLIN;
 	poller.revents = 0;
 
-	int rc = zmq::poll(&poller, 1, 0);
+	int rc = zmq::poll(&poller, 1, 1000);
 
-	if (rc) socket->AfterZMQPoll(poller.revents);
+	if (rc > 0) socket->AfterZMQPoll(poller.revents);
 }
 
 void
@@ -317,26 +317,28 @@ Socket::AfterZMQPoll(int revents) {
 	if (revents & ZMQ_POLLIN) {
 		Local<Array> messages = Array::New();
 
-		for (int i = 0 ; 1 ; i++) {
-			zmq::message_t *msg_ = new zmq::message_t();
-			if (socket_->recv(msg_, ZMQ_NOBLOCK)) {
-				v8::Local<v8::Value> value = node::Encode(msg_->data(), msg_->size(), node::BINARY);
-				messages->Set(Integer::New(i), value);
+		int     i;
+		int64_t more = 1;
+		size_t  more_size = sizeof (more);
 
-				int64_t more;
-				size_t more_size = sizeof (more);
-				socket_->getsockopt(ZMQ_RCVMORE, &more, &more_size);
+		zmq::message_t *msg_ = new zmq::message_t();
 
-				if (!more) {
-					delete msg_;
-					break;
-				}
-			}
+		for (i = 0 ; more && socket_->recv(msg_, ZMQ_NOBLOCK) ; i++) {
+			v8::Local<v8::Value> value = node::Encode(msg_->data(), msg_->size(), node::BINARY);
+			messages->Set(Integer::New(i), value);
+
+			socket_->getsockopt(ZMQ_RCVMORE, &more, &more_size);
+
 			delete msg_;
+			msg_ = new zmq::message_t();
 		}
 
-		Local<Value> argv[] = {messages};
-		Emit(receive_symbol, 1, argv);
+		delete msg_;
+
+		if (i > 0) {
+			Local<Value> argv[] = {messages};
+			Emit(receive_symbol, 1, argv);
+		}
 	}
 }
 
